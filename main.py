@@ -41,6 +41,13 @@ def executar_pipeline():
     print(f"Máximo: {stats_filhos['max']}")
     print(f"Quartis: Q1={stats_filhos['25%']}, Q3={stats_filhos['75%']}")
 
+    print("\n" + "="*40)
+    print("GERANDO GRÁFICOS DE INSIGHTS")
+    print("="*40)
+
+
+    gerar_graficos_insights(df)
+
     # 4. AGRUPAMENTOS 
     print("\n" + "="*40)
     print("INSIGHTS DE AGRUPAMENTO")
@@ -59,4 +66,5 @@ def executar_pipeline():
 
 # Executar
 df_limpo = executar_pipeline()
+
 

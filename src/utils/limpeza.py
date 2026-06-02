@@ -1,5 +1,7 @@
 import pandas as pd
 import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
 import re
 
 def transformar_strings(df: pd.DataFrame, colunas: list) -> pd.DataFrame:
@@ -83,4 +85,45 @@ def gerar_relatorio_estatistico(df):
     print(f"Contagem: {int(stats['count'])}")
     print(f"Quartis: Q1={stats['25%']}, Q2={stats['50%']}, Q3={stats['75%']}")
 
- 
+
+def gerar_graficos_insights(df):
+  
+    sns.set_theme(style="whitegrid")
+    plt.rcParams['figure.figsize'] = [10, 6]
+    
+    # --- INSIGHT 1: Top 10 Categorias mais Vendidas ---
+    plt.figure()
+    top_cats = df['PR_CAT'].value_counts().head(10)
+    sns.barplot(x=top_cats.values, y=top_cats.index, palette='viridis')
+    plt.title('Top 10 Categorias por Volume de Vendas', fontsize=15)
+    plt.xlabel('Quantidade de Itens Vendidos')
+    plt.ylabel('Categoria')
+    plt.tight_layout()
+    #plt.savefig('insight_1_categorias.png')
+    plt.show()
+
+        # --- INSIGHT 2: Volume de Compras por Gênero ---
+    plt.figure()
+        # Usando nunique para contar compras únicas (CO_ID) por gênero
+    compras_genero = df.groupby('CL_GENERO')['CO_ID'].nunique().sort_values()
+        
+    plt.pie(compras_genero, labels=compras_genero.index, autopct='%1.1f%%', 
+            startangle=140, colors=sns.color_palette('pastel'))
+    plt.title('Distribuição de Transações Únicas por Gênero', fontsize=15)
+    plt.tight_layout()
+       # plt.savefig('insight_2_genero.png')
+    plt.show()
+
+        # --- INSIGHT 3: Impacto da Limpeza (Nulos e Categorias) ---
+    plt.figure()
+        # Comparando categorias reais vs "Sem Categoria"
+    cat_status = df['PR_CAT'].apply(lambda x: 'Identificada' if x != 'Sem Categoria' else 'Nula/Vazia').value_counts()
+        
+    sns.barplot(x=cat_status.index, y=cat_status.values, palette='magma')
+    plt.title('Integridade dos Dados: Categorias Preenchidas vs Vazias', fontsize=15)
+    plt.ylabel('Quantidade de Registros')
+    plt.tight_layout()
+    #plt.savefig('insight_3_integridade.png')
+    plt.show()
+
+    print("--- 📈 Gráficos gerados e salvos com sucesso! ---")
